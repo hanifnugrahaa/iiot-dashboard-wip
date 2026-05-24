@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { WeatherCard } from './components/WeatherCard';
 import { CitySelector } from './components/CitySelector';
+import { ThemeToggle } from './components/ThemeToggle';
 
 // Typing Animation Component
 const TypewriterText = ({ text, className }: { text: string, className?: string }) => {
@@ -186,6 +187,7 @@ export default function Home() {
             <TypewriterText text="Dashboard Hiliriset" />
           </h1>
         </div>
+        <ThemeToggle />
       </motion.div>
 
       {/* Main Content */}

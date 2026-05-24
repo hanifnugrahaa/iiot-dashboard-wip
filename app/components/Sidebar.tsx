@@ -82,11 +82,14 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen, onMobileClose }:
         className={`fixed top-0 left-0 h-full w-[260px] z-50 glass rounded-none border-r border-l-0 border-t-0 border-b-0 flex flex-col py-8 px-4 lg:sticky lg:top-0 lg:z-10 lg:h-screen`}
       >
         {/* Logo */}
-        <div className="flex items-center gap-3 px-3 mb-10">
+        <div 
+          className="flex items-center gap-3 px-3 mb-10 cursor-pointer group"
+          onClick={() => handleTabClick('dashboard')}
+        >
           <motion.div
             whileHover={{ scale: 1.05, rotate: 5 }}
             whileTap={{ scale: 0.95 }}
-            className="w-11 h-11 rounded-2xl flex items-center justify-center cursor-pointer overflow-hidden"
+            className="w-11 h-11 rounded-2xl flex items-center justify-center overflow-hidden"
           >
             <Image
               src="/logo.png"

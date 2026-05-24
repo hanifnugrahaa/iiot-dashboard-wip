@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import type { WeatherData } from '../types/weather';
+import { RealtimeClock } from './RealtimeClock';
 
 interface WeatherCardProps {
   weather: WeatherData | null;
@@ -85,8 +86,9 @@ export const WeatherCard: React.FC<WeatherCardProps> = ({ weather, isLoading }) 
           {/* Header */}
           <motion.div variants={childVariants} className="flex items-start justify-between mb-12 relative z-10">
             <div>
-              <h2 className="text-4xl font-bold text-brand-text mb-2 tracking-tight">{weather.city}</h2>
+              <h2 className="text-4xl font-bold text-brand-text mb-1 tracking-tight">{weather.city}</h2>
               <p className="text-brand-text/70 text-lg font-medium">{weather.current.weatherDescription}</p>
+              <RealtimeClock timezone={weather.timezone} />
             </div>
             <motion.div 
               animate={{ y: [0, -10, 0] }} 

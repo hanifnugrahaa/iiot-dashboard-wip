@@ -1,7 +1,5 @@
 # Dashboard Hiliriset IIOT 2026
 
-![IIOT Logo](./public/logo.png)
-
 Welcome to the **Industrial IoT (IIOT) Dashboard**! 
 
 This application is built for the **SINERGI Program (Integrated Technology Transfer-Based Research Downstreaming)**, an initiative by the Directorate General of Research & Development to foster sustainable partnerships and utilize university research outcomes.
@@ -31,27 +29,4 @@ This application is built for the **SINERGI Program (Integrated Technology Trans
 - **Charts & Maps**: Recharts, React-Leaflet, Leaflet
 - **API**: Open-Meteo API (Server-side fetched with Next.js App Router)
 
-## 🚀 Getting Started
 
-### 1. Environment Variables
-Create a `.env.local` file in the root directory and configure the authentication:
-
-```env
-ADMIN_USERNAME=admin
-# Provide a SHA-256 hash for your password
-ADMIN_PASSWORD_HASH=240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9 
-AUTH_SECRET=your_secret_token_here
-```
-*(The hash above is for the password `admin123`)*
-
-### 2. Install Dependencies
-```bash
-npm install
-```
-
-### 3. Run Development Server
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result. Log in using the credentials defined in your `.env.local` file.

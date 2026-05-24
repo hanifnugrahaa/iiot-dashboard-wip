@@ -48,14 +48,13 @@ export type TabId = 'dashboard' | 'forecast' | 'analytics' | 'metrics' | 'alerts
 export interface TabItem {
   id: TabId;
   label: string;
-  icon: string;
 }
 
 export const TABS: TabItem[] = [
-  { id: 'dashboard', label: 'Dashboard', icon: '🏠' },
-  { id: 'forecast', label: 'Forecast', icon: '📅' },
-  { id: 'analytics', label: 'Analytics', icon: '📈' },
-  { id: 'metrics', label: 'Metrics', icon: '🌡️' },
-  { id: 'alerts', label: 'Alerts', icon: '🚨' },
-  { id: 'map', label: 'Map', icon: '🗺️' },
+  { id: 'dashboard', label: 'Dashboard' },
+  { id: 'forecast', label: 'Forecast' },
+  { id: 'analytics', label: 'Analytics' },
+  { id: 'metrics', label: 'Metrics' },
+  { id: 'alerts', label: 'Alerts' },
+  { id: 'map', label: 'Map' },
 ];

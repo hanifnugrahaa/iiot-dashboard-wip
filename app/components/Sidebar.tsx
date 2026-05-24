@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { TABS, type TabId } from '../types/weather';
 
 interface SidebarProps {
@@ -43,11 +44,16 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen, onMobileClose }:
           <motion.div
             whileHover={{ scale: 1.05, rotate: 5 }}
             whileTap={{ scale: 0.95 }}
-            className="w-11 h-11 glass rounded-2xl flex items-center justify-center cursor-pointer"
+            className="w-11 h-11 rounded-2xl flex items-center justify-center cursor-pointer overflow-hidden"
           >
-            <span className="text-sm font-bold bg-gradient-to-r from-brand-accent to-brand-text bg-clip-text text-transparent">
-              IIOT
-            </span>
+            <Image
+              src="/logo.png"
+              alt="IIOT Dashboard Logo"
+              width={44}
+              height={44}
+              className="object-contain"
+              priority
+            />
           </motion.div>
           <div>
             <h1 className="text-sm font-bold tracking-tight text-brand-text">Dashboard</h1>

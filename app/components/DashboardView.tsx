@@ -80,7 +80,7 @@ export function DashboardView({ weather, currentCity, isLoading, onCityChange }:
               About
             </h3>
             <p className="text-brand-text/70 text-sm leading-relaxed font-medium">
-              Modern Industrial IoT dashboard featuring real-time environmental data with an immersive Apple-inspired Liquid Glass UI.
+              Built for the SINERGI Program (Integrated Technology Transfer-Based Research Downstreaming), an initiative by the Directorate General of Research & Development to foster sustainable partnerships and utilize university research outcomes.
             </p>
           </motion.div>
         </div>

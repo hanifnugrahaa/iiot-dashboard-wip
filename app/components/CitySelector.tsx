@@ -16,26 +16,21 @@ export const CitySelector: React.FC<CitySelectorProps> = ({
   isLoading,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredCities, setFilteredCities] = useState<City[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  const filteredCities = React.useMemo(() => {
     if (searchQuery.trim() === '') {
-      setFilteredCities([]);
-      return;
+      return [];
     }
-
     const query = searchQuery.toLowerCase();
-    const filtered = CITIES.filter(
+    return CITIES.filter(
       (city) =>
         city.name.toLowerCase().includes(query) ||
         city.country.toLowerCase().includes(query)
     ).slice(0, 6);
-
-    setFilteredCities(filtered);
   }, [searchQuery]);
 
   useEffect(() => {

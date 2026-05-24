@@ -56,10 +56,9 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchWeather = async (cityName: string, lat: number, lon: number) => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       const url = `/api/weather?lat=${lat}&lon=${lon}&cityName=${encodeURIComponent(cityName)}`;
-      
       const response = await fetch(url);
       const data = await response.json();
       if (data.error) {
@@ -68,7 +67,8 @@ export default function Home() {
         setWeather(data);
         setCurrentCity(cityName);
       }
-    } catch (error) {
+    } catch (err) {
+      console.error(err);
       setWeather(null);
     } finally {
       setIsLoading(false);
@@ -76,7 +76,28 @@ export default function Home() {
   };
 
   useEffect(() => {
-    fetchWeather('Yogyakarta', -7.8075, 110.3694);
+    let mounted = true;
+    const fetchInitial = async () => {
+      try {
+        const url = `/api/weather?lat=-7.8075&lon=110.3694&cityName=Yogyakarta`;
+        const response = await fetch(url);
+        const data = await response.json();
+        if (!mounted) return;
+        if (data.error) {
+          setWeather(null);
+        } else {
+          setWeather(data);
+          setCurrentCity('Yogyakarta');
+        }
+      } catch (err) {
+        console.error(err);
+        if (mounted) setWeather(null);
+      } finally {
+        if (mounted) setIsLoading(false);
+      }
+    };
+    fetchInitial();
+    return () => { mounted = false; };
   }, []);
 
   const handleCityChange = (cityName: string, lat: number, lon: number) => {

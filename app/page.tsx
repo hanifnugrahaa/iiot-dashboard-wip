@@ -10,6 +10,7 @@ import { AnalyticsView } from './components/AnalyticsView';
 import { MetricsView } from './components/MetricsView';
 import { AlertsView } from './components/AlertsView';
 import { MapView } from './components/MapView';
+import { LoginView } from './components/LoginView';
 import type { WeatherData, TabId } from './types/weather';
 
 export default function Home() {
@@ -18,6 +19,28 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<TabId>('dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('iiot_auth_token');
+    if (token) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsAuthenticated(true);
+    }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setAuthChecked(true);
+  }, []);
+
+  const handleLoginSuccess = (token: string) => {
+    localStorage.setItem('iiot_auth_token', token);
+    setIsAuthenticated(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('iiot_auth_token');
+    setIsAuthenticated(false);
+  };
 
   const fetchWeather = useCallback(async (cityName: string, lat: number, lon: number) => {
     setIsLoading(true);
@@ -98,6 +121,14 @@ export default function Home() {
     );
   };
 
+  if (!authChecked) {
+    return <div className="min-h-screen bg-brand-bg" />;
+  }
+
+  if (!isAuthenticated) {
+    return <LoginView onLoginSuccess={handleLoginSuccess} />;
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, filter: 'blur(10px)' }}
@@ -114,6 +145,7 @@ export default function Home() {
           onTabChange={setActiveTab}
           isMobileOpen={isMobileMenuOpen}
           onMobileClose={() => setIsMobileMenuOpen(false)}
+          onLogout={handleLogout}
         />
 
         {/* Main Content */}

@@ -51,9 +51,10 @@ interface SidebarProps {
   onTabChange: (tab: TabId) => void;
   isMobileOpen: boolean;
   onMobileClose: () => void;
+  onLogout: () => void;
 }
 
-export function Sidebar({ activeTab, onTabChange, isMobileOpen, onMobileClose }: SidebarProps) {
+export function Sidebar({ activeTab, onTabChange, isMobileOpen, onMobileClose, onLogout }: SidebarProps) {
   const handleTabClick = (tabId: TabId) => {
     onTabChange(tabId);
     onMobileClose();
@@ -139,13 +140,26 @@ export function Sidebar({ activeTab, onTabChange, isMobileOpen, onMobileClose }:
         </nav>
 
         {/* Bottom section */}
-        <div className="px-3 pt-4 border-t border-brand-text/10">
-          <p className="text-[10px] text-brand-text/40 font-medium">
-            Powered by Open-Meteo API
-          </p>
-          <p className="text-[10px] text-brand-text/30 mt-1">
-            v1.0.0 • Liquid Glass UI
-          </p>
+        <div className="px-3 pt-4 border-t border-brand-text/10 space-y-4">
+          <button
+            onClick={onLogout}
+            className="flex items-center gap-2 text-sm text-brand-text/60 hover:text-red-500 transition-colors w-full text-left px-1"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <polyline points="16 17 21 12 16 7" />
+              <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            Logout
+          </button>
+          <div>
+            <p className="text-[10px] text-brand-text/40 font-medium">
+              Powered by Open-Meteo API
+            </p>
+            <p className="text-[10px] text-brand-text/30 mt-1">
+              v1.0.0 • Liquid Glass UI
+            </p>
+          </div>
         </div>
       </motion.aside>
     </>

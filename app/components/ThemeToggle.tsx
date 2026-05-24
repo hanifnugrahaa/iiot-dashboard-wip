@@ -1,16 +1,22 @@
 'use client';
 
+import { useSyncExternalStore } from 'react';
 import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
-export function ThemeToggle() {
-  const [mounted, setMounted] = useState(false);
-  const { theme, setTheme, resolvedTheme } = useTheme();
+// SSR-safe mounted check without useEffect + setState
+const emptySubscribe = () => () => {};
+function useMounted() {
+  return useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
+}
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+export function ThemeToggle() {
+  const mounted = useMounted();
+  const { setTheme, resolvedTheme } = useTheme();
 
   if (!mounted) {
     return <div className="w-10 h-10 glass rounded-xl" />;
@@ -28,10 +34,7 @@ export function ThemeToggle() {
     >
       <motion.div
         initial={false}
-        animate={{ 
-          rotate: isDark ? 360 : 0, 
-          scale: isDark ? 1 : 1
-        }}
+        animate={{ rotate: isDark ? 360 : 0 }}
         transition={{ type: 'spring', stiffness: 200, damping: 15 }}
       >
         {isDark ? '🌙' : '☀️'}

@@ -25,14 +25,12 @@ export async function GET(request: NextRequest) {
 
     let location: GeoLocation;
 
-    // If lat/lon are provided, use them directly
     if (lat && lon) {
       location = {
         lat: parseFloat(lat),
         lon: parseFloat(lon),
       };
     } else if (city) {
-      // Otherwise, use city lookup (for backwards compatibility)
       const normalizedCity = (city || 'yogyakarta').toLowerCase();
       location = CITIES[normalizedCity];
 
@@ -49,10 +47,42 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Using Open-Meteo API - Free weather API without API key
-    const response = await fetch(
-      `https://api.open-meteo.com/v1/forecast?latitude=${location.lat}&longitude=${location.lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&timezone=auto`
-    );
+    // Enhanced Open-Meteo API call with hourly + daily + extra current data
+    const apiUrl = new URL('https://api.open-meteo.com/v1/forecast');
+    apiUrl.searchParams.set('latitude', String(location.lat));
+    apiUrl.searchParams.set('longitude', String(location.lon));
+    apiUrl.searchParams.set('current', [
+      'temperature_2m',
+      'relative_humidity_2m',
+      'weather_code',
+      'wind_speed_10m',
+      'wind_direction_10m',
+      'apparent_temperature',
+      'pressure_msl',
+      'visibility',
+      'dew_point_2m',
+      'uv_index',
+    ].join(','));
+    apiUrl.searchParams.set('hourly', [
+      'temperature_2m',
+      'relative_humidity_2m',
+      'wind_speed_10m',
+      'precipitation',
+    ].join(','));
+    apiUrl.searchParams.set('daily', [
+      'temperature_2m_max',
+      'temperature_2m_min',
+      'weather_code',
+      'precipitation_sum',
+      'wind_speed_10m_max',
+      'sunrise',
+      'sunset',
+      'uv_index_max',
+    ].join(','));
+    apiUrl.searchParams.set('timezone', 'auto');
+    apiUrl.searchParams.set('forecast_days', '7');
+
+    const response = await fetch(apiUrl.toString());
 
     if (!response.ok) {
       throw new Error('Failed to fetch weather data');
@@ -60,16 +90,58 @@ export async function GET(request: NextRequest) {
 
     const data = await response.json();
 
+    // Build hourly array (next 24 hours)
+    const now = new Date();
+    const hourlyData = [];
+    for (let i = 0; i < Math.min(24, data.hourly.time.length); i++) {
+      const time = new Date(data.hourly.time[i]);
+      if (time >= new Date(now.getTime() - 60 * 60 * 1000)) {
+        hourlyData.push({
+          time: data.hourly.time[i],
+          temperature: data.hourly.temperature_2m[i],
+          humidity: data.hourly.relative_humidity_2m[i],
+          windSpeed: data.hourly.wind_speed_10m[i],
+          precipitation: data.hourly.precipitation[i],
+        });
+        if (hourlyData.length >= 24) break;
+      }
+    }
+
+    // Build daily array
+    const dailyData = data.daily.time.map((time: string, i: number) => ({
+      date: time,
+      tempMax: Math.round(data.daily.temperature_2m_max[i]),
+      tempMin: Math.round(data.daily.temperature_2m_min[i]),
+      weatherCode: data.daily.weather_code[i],
+      weatherDescription: getWeatherDescription(data.daily.weather_code[i]),
+      icon: getWeatherIcon(data.daily.weather_code[i]),
+      precipitationSum: data.daily.precipitation_sum[i],
+      windSpeedMax: data.daily.wind_speed_10m_max[i],
+      sunrise: data.daily.sunrise[i],
+      sunset: data.daily.sunset[i],
+      uvIndexMax: data.daily.uv_index_max[i],
+    }));
+
     return NextResponse.json({
       city: cityName,
+      lat: location.lat,
+      lon: location.lon,
       current: {
         temperature: Math.round(data.current.temperature_2m),
         humidity: data.current.relative_humidity_2m,
         windSpeed: Math.round(data.current.wind_speed_10m * 10) / 10,
+        windDirection: data.current.wind_direction_10m,
         weatherCode: data.current.weather_code,
         weatherDescription: getWeatherDescription(data.current.weather_code),
         icon: getWeatherIcon(data.current.weather_code),
+        apparentTemperature: Math.round(data.current.apparent_temperature),
+        pressure: Math.round(data.current.pressure_msl),
+        visibility: Math.round(data.current.visibility / 1000 * 10) / 10, // km
+        dewPoint: Math.round(data.current.dew_point_2m),
+        uvIndex: data.current.uv_index,
       },
+      hourly: hourlyData,
+      daily: dailyData,
       timezone: data.timezone,
     });
   } catch (error) {

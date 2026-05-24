@@ -2,18 +2,7 @@
 
 import React from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-
-interface WeatherData {
-  city: string;
-  current: {
-    temperature: number;
-    humidity: number;
-    windSpeed: number;
-    weatherCode: number;
-    weatherDescription: string;
-    icon: string;
-  };
-}
+import type { WeatherData } from '../types/weather';
 
 interface WeatherCardProps {
   weather: WeatherData | null;

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { CITIES, type City } from '../constants/cities';
 
 interface CitySelectorProps {
@@ -57,7 +57,7 @@ export const CitySelector: React.FC<CitySelectorProps> = ({
     onCityChange(city.name, city.lat, city.lon);
   };
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0, y: 10, scale: 0.95, filter: 'blur(10px)' },
     visible: { 
       opacity: 1, 
@@ -80,7 +80,7 @@ export const CitySelector: React.FC<CitySelectorProps> = ({
     }
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, x: -10 },
     visible: { opacity: 1, x: 0, transition: { type: 'spring', stiffness: 300 } }
   };

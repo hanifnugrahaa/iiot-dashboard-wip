@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 
 interface WeatherData {
   city: string;
@@ -21,7 +21,7 @@ interface WeatherCardProps {
 }
 
 export const WeatherCard: React.FC<WeatherCardProps> = ({ weather, isLoading }) => {
-  const cardVariants = {
+  const cardVariants: Variants = {
     hidden: { opacity: 0, scale: 0.95, filter: 'blur(10px)', y: 20 },
     visible: { 
       opacity: 1, 
@@ -37,7 +37,7 @@ export const WeatherCard: React.FC<WeatherCardProps> = ({ weather, isLoading }) 
     }
   };
 
-  const childVariants = {
+  const childVariants: Variants = {
     hidden: { opacity: 0, y: 15 },
     visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 200 } }
   };

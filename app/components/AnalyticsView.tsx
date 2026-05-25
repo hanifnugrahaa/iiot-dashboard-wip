@@ -7,17 +7,19 @@ import {
   ResponsiveContainer, BarChart, Bar, AreaChart, Area,
 } from 'recharts';
 import type { WeatherData } from '../types/weather';
+import { ExportButton, exportWeatherCSV, exportPDF } from './ExportButton';
 
 interface AnalyticsViewProps {
   weather: WeatherData | null;
   isLoading: boolean;
+  onLogExport?: (detail: string) => void;
 }
 
 function formatHour(timeStr: string): string {
   return new Date(timeStr).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 }
 
-export function AnalyticsView({ weather, isLoading }: AnalyticsViewProps) {
+export function AnalyticsView({ weather, isLoading, onLogExport }: AnalyticsViewProps) {
   if (isLoading || !weather) {
     return (
       <div className="space-y-6">
@@ -45,15 +47,30 @@ export function AnalyticsView({ weather, isLoading }: AnalyticsViewProps) {
   const brandAccent = '#86B6F6';
   const brandText = '#176B87';
 
+  const handleCSV = () => {
+    exportWeatherCSV(weather.hourly, weather.city);
+    onLogExport?.(`Exported hourly CSV for ${weather.city}`);
+  };
+
+  const handlePDF = () => {
+    exportPDF();
+    onLogExport?.(`Printed analytics report for ${weather.city}`);
+  };
+
   return (
-    <div>
-      <motion.h2
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        className="text-2xl font-bold text-brand-text mb-2"
-      >
-        📈 Analytics
-      </motion.h2>
+    <div className="print-area">
+      <div className="flex items-center justify-between mb-2">
+        <motion.h2
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="text-2xl font-bold text-brand-text"
+        >
+          📈 Analytics
+        </motion.h2>
+        <div className="no-print">
+          <ExportButton onExportCSV={handleCSV} onExportPDF={handlePDF} />
+        </div>
+      </div>
       <motion.p
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

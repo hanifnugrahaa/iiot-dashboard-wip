@@ -41,7 +41,7 @@ export function RealtimeClock({ timezone }: RealtimeClockProps) {
         
         setTimeStr(time.replace(/\./g, ':'));
         setDateStr(date);
-      } catch (e) {
+      } catch {
         // Fallback if timezone is invalid
         setTimeStr(now.toLocaleTimeString('id-ID'));
         setDateStr(now.toLocaleDateString('id-ID'));

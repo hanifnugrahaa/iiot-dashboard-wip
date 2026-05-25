@@ -3,10 +3,12 @@
 import React from 'react';
 import { motion, Variants } from 'framer-motion';
 import type { WeatherData } from '../types/weather';
+import { ExportButton, exportMetricsCSV } from './ExportButton';
 
 interface MetricsViewProps {
   weather: WeatherData | null;
   isLoading: boolean;
+  onLogExport?: (detail: string) => void;
 }
 
 const cardV: Variants = {
@@ -27,7 +29,7 @@ function getWindDir(deg: number) {
   return d[Math.round(deg / 45) % 8];
 }
 
-export function MetricsView({ weather, isLoading }: MetricsViewProps) {
+export function MetricsView({ weather, isLoading, onLogExport }: MetricsViewProps) {
   if (isLoading || !weather) {
     return (
       <div>
@@ -60,11 +62,22 @@ export function MetricsView({ weather, isLoading }: MetricsViewProps) {
     { label: 'Curah Hujan', val: td ? `${td.precipitationSum} mm` : '-', icon: '🌧️', sub: 'Hari ini' },
   ];
 
+  const handleCSV = () => {
+    exportMetricsCSV(
+      items.map((m) => ({ label: m.label, value: m.val })),
+      weather.city
+    );
+    onLogExport?.(`Exported metrics CSV for ${weather.city}`);
+  };
+
   return (
     <div>
-      <motion.h2 initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="text-2xl font-bold text-brand-text mb-2">
-        🌡️ Detail Metrics
-      </motion.h2>
+      <div className="flex items-center justify-between mb-2">
+        <motion.h2 initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="text-2xl font-bold text-brand-text">
+          🌡️ Detail Metrics
+        </motion.h2>
+        <ExportButton onExportCSV={handleCSV} />
+      </div>
       <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }} className="text-brand-text/60 text-sm mb-8 font-medium">
         Parameter lingkungan lengkap untuk {weather.city}
       </motion.p>
